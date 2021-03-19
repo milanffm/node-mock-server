@@ -6,6 +6,7 @@ const port = process.env.PORT || 4123
 server.use(jsonServer.bodyParser)
 server.use(middlewares)
 
+
 server.get('/api/users', (request, response) => {
 if (request.method === 'GET') {
         const users = require('./api/users')
