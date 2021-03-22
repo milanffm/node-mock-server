@@ -3,7 +3,7 @@ const responses = [
     urls: ["/api/quotes"],
     code: "error",
     httpStatus: 500,
-    respone: {
+    response: {
       code: "error-quotes",
       message: "Unable to get data. ",
     },
@@ -12,7 +12,7 @@ const responses = [
     urls: ["/api/users/me"],
     code: "error-user",
     httpStatus: 500,
-    respone: {
+    response: {
       code: "error-user",
       message: "Unable to get user data. ",
     },

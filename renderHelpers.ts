@@ -1,7 +1,7 @@
 import { scenariosForEndpoint } from "./mock-models";
 import responses from "./responses";
 
-export const getCustomReponse = (url, scenarios) => {
+export const getCustomResponse = (url, scenarios) => {
   if (!scenarios || scenarios.length === 0) return null;
 
   return responses.find(

@@ -105,3 +105,8 @@ export interface UserProfileDto {
   name: string;
   userPictureUrl: string | undefined;
 }
+
+export interface Test {
+  id: string;
+  name: string;
+}
