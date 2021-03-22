@@ -15,5 +15,7 @@ if (request.method === 'GET') {
 })
 
 server.listen(port, () => {
-    console.log('JSON Server is running')
+console.log(` \n ================================== \n 
+JSON Server is running on: \nhttp://localhost:${port}\n
+================================== \n `);
 })
