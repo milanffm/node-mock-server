@@ -1,11 +1,11 @@
 import quotes from "./quotes";
 import user from "./user";
-import test from "./test";
+import tests from "./tests";
 
 const data = {
   quotes,
   user,
-  test
+  tests
 };
 
 export default data;

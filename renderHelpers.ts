@@ -3,7 +3,7 @@ import responses from "./responses";
 
 export const getCustomResponse = (url, scenarios) => {
   if (!scenarios || scenarios.length === 0) return null;
-
+  console.log(scenarios)
   return responses.find(
     (response) =>
       scenarios.includes(response.code) && response.urls.includes(url)

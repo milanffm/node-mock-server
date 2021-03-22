@@ -2,6 +2,8 @@ import jsonServer from 'json-server';
 import data from './mockData';
 import * as renderHelpers from './renderHelpers';
 import { getScenariosApplicableToEndpoint } from './renderHelpers';
+const port = process.env.PORT || 5000;
+//const development = process.env.NODE_ENV === 'development';
 
 const server = jsonServer.create();
 const router = jsonServer.router(data);
@@ -10,24 +12,31 @@ const middlewares = jsonServer.defaults();
 server.use(middlewares);
 
 server.use(
-  jsonServer.rewriter({
-    '/api/*': '/$1',
-    '/users/me': '/user',
-  })
+    jsonServer.rewriter({
+      '/api/*': '/$1',
+      '/users/me': '/user',
+    })
 );
 
+/**
+ * return faked api data depends on request
+ * @param req
+ * @param res
+ */
 // @ts-ignore
 router.render = (req, res) => {
   console.log('=========== req.headers[scenarios]',req.headers['scenarios'])
   const scenariosHeaderString = req.headers['scenarios'];
   const scenariosFromHeader = scenariosHeaderString
-    ? scenariosHeaderString.split(' ')
-    : [];
-  const url = renderHelpers.removeTrailingSlashes(req._parsedOriginalUrl.path);
-  console.log(req._parsedOriginalUrl.path)
+      ? scenariosHeaderString.split(' ')
+      : [];
+
+  //Todo find a way to get always the current path from jsonServer
+  const url = renderHelpers.removeTrailingSlashes(req._parsedOriginalUrl ? req._parsedOriginalUrl.path : req.originalUrl);
 
   let customResponse = renderHelpers.getCustomResponse(url, scenariosFromHeader);
 
+  /** if scenario === 'error' return custom error response **/
   if (customResponse) {
     res.status(customResponse.httpStatus).jsonp(customResponse.response);
   } else {
@@ -36,21 +45,21 @@ router.render = (req, res) => {
     if (url === 'api/quotes' && req.method === 'GET') {
       data = data.map(renderHelpers.toQuoteSummary);
     }
-    console.log('===scenariosHeaderString,', scenariosHeaderString)
+
     if (scenariosHeaderString && Array.isArray(data) && data.length > 0) {
       const scenariosApplicableToEndPoint = getScenariosApplicableToEndpoint(
-        url,
-        scenariosFromHeader
+          url,
+          scenariosFromHeader
       );
-      console.log('===scenariosApplicableToEndPoint; ',scenariosApplicableToEndPoint)
       const filteredByScenario = data.filter((d) =>
-        scenariosApplicableToEndPoint.every(
-          (scenario) => d.scenarios && d.scenarios.includes(scenario)
-        )
+          scenariosApplicableToEndPoint.every(
+              (scenario) => d.scenarios && d.scenarios.includes(scenario)
+          )
       );
-      //console.log('=== filteredByScenario', filteredByScenario)
+      /** return json or array filtered by given scenario **/
       return res.jsonp(filteredByScenario);
     } else {
+      /** return unfiltered fake data for given url **/
       return res.jsonp(data);
     }
   }
@@ -58,6 +67,6 @@ router.render = (req, res) => {
 
 server.use(router);
 
-server.listen(5000, () => {
-  console.log('JSON Server is running');
+server.listen(port, () => {
+  console.log(`================================\nJSON Server is running on: \nhttp://localhost:${port}\n================================\n`);
 });
